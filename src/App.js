@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
 
-
 function App() {
-  const[paragrafGoster, paragrafIslem]=useState(true)
-  const[sayac, sayacGuncelle]=useState(0)
-  useEffect(()=>{   // 1 parametreli vers. return'dan sonra çalışır.
-    setTimeout(()=>{
-      sayacGuncelle(eskiDeger=> eskiDeger+1)
-      console.log("Useeffect çalıştı..");
-    }, 2000)
-  })
+  const [yukleniyor, yukleniyorGuncelle] = useState(true)
+  const [data, setData] = useState([]);
 
-  
-  
+  useEffect(() => {
+
+    async function fetchData() {
+      const response = await fetch('https://jsonplaceholder.org/users');
+      const jsObjectData = await response.json();
+      setData(jsObjectData);
+      yukleniyorGuncelle(false)
+    };
+
+    setTimeout( fetchData , 2000 )
+
+  }, []); 
+
+  console.log(data);
+
   return (
-   <>
-   {paragrafGoster&&<p id="p1">App</p> }    
-   Sayaç: {sayac} 
-   </>
-  )
+    <>
+      { yukleniyor && <p>Yükleniyor..</p> }
+      {  data.map(  kisi => <p key={kisi.id}> {kisi.firstname} </p> )  }
+    </>
+  );
 }
 
 export default App;
